@@ -1,0 +1,20 @@
+/home/me/cs-415/project1
+Directory already exists!
+Error! Unrecognized command: sfjlksagjlks
+..	.	
+/home/me/cs-415/project1/test
+/home/me/cs-415/project1/test
+input.txt	..	.	
+pwd ; mkdir test ; cd test
+sfjlksagjlks;ls; pwd;
+cd .. ; cd test ; pwd
+cp ../input.txt . ; ls ; cat input.txt
+mv input.txt del.txt ; pwd ; ls
+rm del.txt ; ls
+cd .. ; pwd
+ls
+/home/me/cs-415/project1/test
+del.txt	..	.	
+..	.	
+/home/me/cs-415/project1
+command.h.gch	string_alteration.h	command.c	main.o	string_parser.o	string_alteration.h.gch	string_alteration.c	input.txt	test	string_parser.h	..	report.pdf	.	colby_roberts_DebianUTM_Project1.tar	Makefile	command.h	string_parser.h.gch	output.txt	main.c	string_parser.c	main.h	command.o	main.h.gch	pseudo-shell	string_alteration.o	

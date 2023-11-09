@@ -1,0 +1,60 @@
+==65713== Memcheck, a memory error detector
+==65713== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==65713== Using Valgrind-3.19.0 and LibVEX; rerun with -h for copyright info
+==65713== Command: ./part1 input.txt
+==65713== 
+total 220
+ 4 string_parser.h
+ 4 string_parser.c
+ 4 part5.c
+ 8 part4.c
+28 part4
+ 8 part3.c
+24 part3
+ 4 part2.c
+24 part2
+ 4 part1.c
+24 part1
+ 4 MCP.h
+ 4 Makefile
+ 4 log4.txt
+ 4 log3.txt
+ 4 log2.txt
+ 4 log1.txt
+ 4 iobound.c
+20 iobound
+ 4 input.txt
+ 4 cpubound.c
+20 cpubound
+ 4 ..
+ 4 .
+Exec error: No such file or directory
+==65716== 
+==65716== HEAP SUMMARY:
+==65716==     in use at exit: 773 bytes in 5 blocks
+==65716==   total heap usage: 20 allocs, 15 frees, 5,035 bytes allocated
+==65716== 
+==65716== LEAK SUMMARY:
+==65716==    definitely lost: 0 bytes in 0 blocks
+==65716==    indirectly lost: 0 bytes in 0 blocks
+==65716==      possibly lost: 0 bytes in 0 blocks
+==65716==    still reachable: 773 bytes in 5 blocks
+==65716==         suppressed: 0 bytes in 0 blocks
+==65716== Reachable blocks (those to which a pointer was found) are not shown.
+==65716== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==65716== 
+==65716== For lists of detected and suppressed errors, rerun with: -s
+==65716== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Process: 65718 - Begining calculation.
+Process: 65718 - Finished.
+Process: 65717 - Begining to write to file.
+Process: 65717 - Finished.
+==65713== 
+==65713== HEAP SUMMARY:
+==65713==     in use at exit: 0 bytes in 0 blocks
+==65713==   total heap usage: 32 allocs, 32 frees, 5,250 bytes allocated
+==65713== 
+==65713== All heap blocks were freed -- no leaks are possible
+==65713== 
+==65713== For lists of detected and suppressed errors, rerun with: -s
+==65713== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

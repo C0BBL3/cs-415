@@ -1,0 +1,19 @@
+
+**** Build of configuration Debug for project Lab0 ****
+
+Nothing to build for project Lab0
+16:42:08 **** Incremental Build of configuration Debug for project Lab0 ****
+make all 
+Building file: ../Lab0.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"Lab0.d" -MT"Lab0.o" -o "Lab0.o" "../Lab0.c"
+Finished building: ../Lab0.c
+ 
+Building target: Lab0
+Invoking: GCC C Linker
+gcc  -o "Lab0" ./Lab0.o   
+Finished building target: Lab0
+ 
+16:42:55 **** Incremental Build of configuration Debug for project Lab0 ****
+make all 
+make: Nothing to be done for 'all'.
