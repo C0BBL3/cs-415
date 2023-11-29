@@ -30,11 +30,6 @@ void process_transaction(account* accounts, account* acc, command_line transacti
     strcpy(src_account, transaction_tokens.command_list[1]);
     strcpy(password, transaction_tokens.command_list[2]);
 
-    if (action == 'D' || action == 'T' || action == 'W')
-    {
-        transfer_amount = atof(transaction_tokens.command_list[3]);
-    }
-
     // Validate password
     if (strcmp(password, acc->password) != 0) {
         // Invalid password, handle accordingly
@@ -46,8 +41,11 @@ void process_transaction(account* accounts, account* acc, command_line transacti
         case 'T':
             // Transfer funds
             // Find the destination account
-            strcpy(dest_account, transaction_tokens.command_list[4]);
+            strcpy(dest_account, transaction_tokens.command_list[3]);
             account* dest_acc = find_account_by_number(accounts, dest_account);
+
+            // Get transfer amount
+            transfer_amount = atof(transaction_tokens.command_list[4]);
 
             // Validate destination account
             if (dest_acc == NULL) {
@@ -67,6 +65,7 @@ void process_transaction(account* accounts, account* acc, command_line transacti
 
             // Withdraw from source account
             acc->balance -= transfer_amount;
+            acc->transaction_tracker += transfer_amount;  // Increment the transaction tracker
 
             // Deposit to destination account
             dest_acc->balance += transfer_amount;
@@ -79,16 +78,23 @@ void process_transaction(account* accounts, account* acc, command_line transacti
             break;
 
         case 'D':
+            // Get transfer amount
+            transfer_amount = atof(transaction_tokens.command_list[3]);
+
             // Deposit
             acc->balance += transfer_amount;
-            acc->transaction_tracker += 1.0;  // Increment the transaction tracker
+            acc->transaction_tracker += transfer_amount;  // Increment the transaction tracker
             break;
 
         case 'W':
+            
+            // Get transfer amount
+            transfer_amount = atof(transaction_tokens.command_list[3]);
+
             // Withdraw
             if (acc->balance >= transfer_amount) {
                 acc->balance -= transfer_amount;
-                acc->transaction_tracker += 1.0;  // Increment the transaction tracker
+                acc->transaction_tracker += transfer_amount;  // Increment the transaction tracker
             } else {
                 // Handle insufficient funds
             }
@@ -105,16 +111,10 @@ void process_transaction(account* accounts, account* acc, command_line transacti
 
 // Function to update the balance for all accounts
 void update_balance(account* accounts) {
-    // Calculate the total transaction tracker for all accounts
-    double total_transaction_tracker = 0.0;
-    for (int i = 0; i < num_accounts; i++) {
-        total_transaction_tracker += accounts[i].transaction_tracker;
-    }
-
     // Update balances based on reward rate and transaction tracker
     for (int i = 0; i < num_accounts; i++) {
         // Calculate the additional balance based on reward rate and transaction tracker
-        double additional_balance = accounts[i].reward_rate * total_transaction_tracker;
+        double additional_balance = accounts[i].reward_rate * accounts[i].transaction_tracker;
 
         // Update the account balance
         accounts[i].balance += additional_balance;
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
             size_t current_length = strlen(account_info);
             size_t new_line_length = strlen(line);
 
-            // Resize the account_info buffer if necessary
+            // Resize the account_info buffer
             account_info = (char*)realloc(account_info, (current_length + new_line_length + 1) * sizeof(char));
 
             // Check if realloc succeeded
@@ -239,12 +239,11 @@ int main(int argc, char *argv[])
 
     // Read and process transactions for each account
     char transaction[MAX_TRANSACTIONS];
-    command_line transaction_tokens;
     
     while (fgets(transaction, MAX_TRANSACTIONS, input_file) != NULL) 
     {
         // Use string parser to tokenize the transaction
-        transaction_tokens = str_filler(transaction, " ");
+        command_line transaction_tokens = str_filler(transaction, " ");
 
         // Validate the number of transaction_tokens
         if (transaction_tokens.num_token < 2) 
@@ -259,11 +258,13 @@ int main(int argc, char *argv[])
         char* account_number = strdup(transaction_tokens.command_list[1]);
         account* active_account = find_account_by_number(accounts, account_number);
         process_transaction(accounts, active_account, transaction_tokens);
-    }
 
-    // Free memory allocated for transaction_tokens
-    free_command_line(&transaction_tokens);
-    memset(&transaction_tokens, 0, 0);
+        fflush(stdout);
+
+        // // Free memory allocated for transaction_tokens
+        // free_command_line(&transaction_tokens);
+        // memset(&transaction_tokens, 0, 0);
+    }
 
     // Close the input file
     fclose(input_file);
@@ -279,7 +280,7 @@ int main(int argc, char *argv[])
     }
 
     for (int i = 0; i < num_accounts; i++) {
-        fprintf(output_file, "%d balance:\t%.2f\n", i, accounts[i].balance);
+        fprintf(output_file, "%d balance:\t%.2f\n\n", i, accounts[i].balance);
     }
 
     // Close the output file

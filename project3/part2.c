@@ -32,24 +32,19 @@ void process_transaction(account* acc, char* transaction) {
     switch (action) {
         case 'T':
             // Transfer funds
-            // Check if the source account has enough balance
-            if (acc->balance >= transfer_amount) {
-                // Withdraw from source account
-                acc->balance -= transfer_amount;
-                
-                // Find the destination account
-                account* dest_acc = find_account_by_number(accounts, num_accounts, dest_account);
-                
-                if (dest_acc != NULL) {
-                    // Deposit to destination account
-                    pthread_mutex_lock(&dest_acc->ac_lock);  // Lock the destination account
-                    dest_acc->balance += transfer_amount;
-                    pthread_mutex_unlock(&dest_acc->ac_lock);  // Unlock the destination account
-                } else {
-                    // Handle destination account not found
-                }
+            // Withdraw from source account
+            acc->balance -= transfer_amount;
+            
+            // Find the destination account
+            account* dest_acc = find_account_by_number(accounts, num_accounts, dest_account);
+            
+            if (dest_acc != NULL) {
+                // Deposit to destination account
+                pthread_mutex_lock(&dest_acc->ac_lock);  // Lock the destination account
+                dest_acc->balance += transfer_amount;
+                pthread_mutex_unlock(&dest_acc->ac_lock);  // Unlock the destination account
             } else {
-                // Handle insufficient funds
+                // Handle destination account not found
             }
             break;
 

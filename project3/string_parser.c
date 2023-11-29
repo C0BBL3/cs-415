@@ -91,7 +91,6 @@ void free_command_line(command_line* command)
 
 	if(command->command_list != NULL) {
 		for (int i = 0; i < command->num_token - 1; i++) {
-			if (command->command_list[i] == NULL) { break; }
 			free(command->command_list[i]);
 		}
 
