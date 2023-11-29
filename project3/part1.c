@@ -9,8 +9,10 @@ int num_accounts;
 // Function to find an account by its account number
 account* find_account_by_number(account* accounts, const char* account_number) 
 {
-    for (int i = 0; i < num_accounts; i++) {
-        if (strcmp(accounts[i].account_number, account_number) == 0) {
+    for (int i = 0; i < num_accounts; i++) 
+    {
+        if (strcmp(accounts[i].account_number, account_number) == 0) 
+        {
             return &accounts[i]; // Return a pointer to the found account
         }
     }
@@ -31,37 +33,30 @@ void process_transaction(account* accounts, account* acc, command_line transacti
     strcpy(password, transaction_tokens.command_list[2]);
 
     // Validate password
-    if (strcmp(password, acc->password) != 0) {
+    if (strcmp(password, acc->password) != 0) 
+    {
         // Invalid password, handle accordingly
         return;
     }
 
     // Implement logic for processing different transaction types
-    switch (action) {
+    switch (action) 
+    {
         case 'T':
             // Transfer funds
             // Find the destination account
             strcpy(dest_account, transaction_tokens.command_list[3]);
             account* dest_acc = find_account_by_number(accounts, dest_account);
 
+            // Validate destination account
+            if (dest_acc == NULL) 
+            {
+                // Handle invalid destination account
+                break;
+            }
+
             // Get transfer amount
             transfer_amount = atof(transaction_tokens.command_list[4]);
-
-            // Validate destination account
-            if (dest_acc == NULL) {
-                // Handle invalid destination account
-                free_command_line(&transaction_tokens);
-                memset(&transaction_tokens, 0, 0);
-                return;
-            }
-
-            // Validate password for destination account
-            if (strcmp(password, dest_acc->password) != 0) {
-                // Handle invalid password
-                free_command_line(&transaction_tokens);
-                memset(&transaction_tokens, 0, 0);
-                return;
-            }
 
             // Withdraw from source account
             acc->balance -= transfer_amount;
@@ -92,12 +87,8 @@ void process_transaction(account* accounts, account* acc, command_line transacti
             transfer_amount = atof(transaction_tokens.command_list[3]);
 
             // Withdraw
-            if (acc->balance >= transfer_amount) {
-                acc->balance -= transfer_amount;
-                acc->transaction_tracker += transfer_amount;  // Increment the transaction tracker
-            } else {
-                // Handle insufficient funds
-            }
+            acc->balance -= transfer_amount;
+            acc->transaction_tracker += transfer_amount;  // Increment the transaction tracker
             break;
 
         default:
@@ -106,13 +97,14 @@ void process_transaction(account* accounts, account* acc, command_line transacti
     }
 
     free_command_line(&transaction_tokens);
-    memset(&transaction_tokens, 0, 0);
 }
 
 // Function to update the balance for all accounts
-void update_balance(account* accounts) {
+void update_balance(account* accounts) 
+{
     // Update balances based on reward rate and transaction tracker
-    for (int i = 0; i < num_accounts; i++) {
+    for (int i = 0; i < num_accounts; i++) 
+    {
         // Calculate the additional balance based on reward rate and transaction tracker
         double additional_balance = accounts[i].reward_rate * accounts[i].transaction_tracker;
 
@@ -161,7 +153,6 @@ int main(int argc, char *argv[])
         {
             // Free memory allocated for index_line
             free_command_line(&index_line);
-            memset(&index_line, 0, 0);
             fclose(input_file);
             return EXIT_FAILURE;
         }
@@ -171,13 +162,11 @@ int main(int argc, char *argv[])
         {
             // Free memory allocated for index_line
             free_command_line(&index_line);
-            memset(&index_line, 0, 0);
             break;
         }
 
         // Free memory allocated for index_line
         free_command_line(&index_line);
-        memset(&index_line, 0, 0);
 
         // Duplicate the account number line into the account info string
         fgets(line, MAX_LINE, input_file);
@@ -212,12 +201,12 @@ int main(int argc, char *argv[])
         free(account_info);
 
         // Validate the number of account_info_tokens
-        if (account_info_tokens.num_token < 4) {
+        if (account_info_tokens.num_token < 4) 
+        {
             // Handle invalid account information
             fclose(input_file);
             // Free memory allocated for account_info_tokens
             free_command_line(&account_info_tokens);
-            memset(&account_info_tokens, 0, 0);
             return EXIT_FAILURE;
         }
         
@@ -231,7 +220,6 @@ int main(int argc, char *argv[])
 
         // Free memory allocated for account_info_tokens
         free_command_line(&account_info_tokens);
-        memset(&account_info_tokens, 0, 0);
     }
     
     printf("okie\n");
@@ -250,7 +238,6 @@ int main(int argc, char *argv[])
         {
             // Handle invalid transaction
             free_command_line(&transaction_tokens);
-            memset(&transaction_tokens, 0, 0);
             continue;
         }
 
@@ -261,9 +248,8 @@ int main(int argc, char *argv[])
 
         fflush(stdout);
 
-        // // Free memory allocated for transaction_tokens
-        // free_command_line(&transaction_tokens);
-        // memset(&transaction_tokens, 0, 0);
+        // Free memory allocated for transaction_tokens
+        //free_command_line(&transaction_tokens);
     }
 
     // Close the input file
@@ -274,12 +260,14 @@ int main(int argc, char *argv[])
 
     // Print the final balances to the output file
     FILE* output_file = fopen("output-2.txt", "w");
-    if (output_file == NULL) {
+    if (output_file == NULL) 
+    {
         perror("Error opening output file");
         return EXIT_FAILURE;
     }
 
-    for (int i = 0; i < num_accounts; i++) {
+    for (int i = 0; i < num_accounts; i++) 
+    {
         fprintf(output_file, "%d balance:\t%.2f\n\n", i, accounts[i].balance);
     }
 
