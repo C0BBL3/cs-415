@@ -95,8 +95,6 @@ void process_transaction(account* accounts, account* acc, command_line transacti
             // Handle invalid transaction type
             break;
     }
-
-    free_command_line(&transaction_tokens);
 }
 
 // Function to update the balance for all accounts
@@ -249,7 +247,7 @@ int main(int argc, char *argv[])
         fflush(stdout);
 
         // Free memory allocated for transaction_tokens
-        //free_command_line(&transaction_tokens);
+        free_command_line(&transaction_tokens);
     }
 
     // Close the input file
