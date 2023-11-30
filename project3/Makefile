@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -g -W -Wall
 
 DEPS = string_parser.c string_parser.h account.h
-PARTS = part1
+PARTS = part3
 EXECUTABLES = $(PARTS)
 
 all: $(EXECUTABLES)

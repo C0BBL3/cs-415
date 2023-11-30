@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     num_accounts = atoi(line);
     account accounts[num_accounts];
 
-    // Read account information
+    // Get and set account information
     for (int i = 0; i < num_accounts; i++) 
     {
         fgets(line, MAX_LINE, input_file);
@@ -219,14 +219,11 @@ int main(int argc, char *argv[])
         // Free memory allocated for account_info_tokens
         free_command_line(&account_info_tokens);
     }
-    
-    printf("okie\n");
-    fflush(stdout);
 
     // Read and process transactions for each account
-    char transaction[MAX_TRANSACTIONS];
+    char transaction[MAX_ACCOUNTS];
     
-    while (fgets(transaction, MAX_TRANSACTIONS, input_file) != NULL) 
+    while (fgets(transaction, MAX_ACCOUNTS, input_file) != NULL) 
     {
         // Use string parser to tokenize the transaction
         command_line transaction_tokens = str_filler(transaction, " ");
