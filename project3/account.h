@@ -9,6 +9,7 @@
 
 #define MAX_ACCOUNTS 16
 #define MAX_LINE 256
+#define UPDATE_THRESHOLD 5000
 
 typedef struct {
     char account_number[17];
@@ -24,8 +25,13 @@ typedef struct {
     pthread_mutex_t ac_lock;
 } account;
 
+int initialize_accounts(char *argv[]); 
+
 // Function to find an account by its account number
 account* find_account_by_number(const char* account_number);
+
+// Function to check if transaction is a valid transaction
+int check_if_transaction_is_valid(command_line transaction_token);
 
 // Function to process a transaction for a single account
 void process_transaction(command_line account_info_tokens);
