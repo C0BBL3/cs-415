@@ -1,7 +1,5 @@
 #include "account.h"
 
-int sleep(int);
-
 int num_accounts;
 int num_transactions;
 int requests_processed = 0;
@@ -9,11 +7,11 @@ int workers_exited = 0;
 account accounts[MAX_ACCOUNTS];
 pthread_t worker_threads[MAX_ACCOUNTS];
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex_2 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex;
+pthread_mutex_t mutex_2;
 pthread_barrier_t barrier;
-pthread_cond_t cond_acc = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond_bank = PTHREAD_COND_INITIALIZER;
+pthread_cond_t cond_acc;
+pthread_cond_t cond_bank;
 
 // Function to initialize the accounts
 int initialize_accounts(char *argv[])
@@ -133,8 +131,17 @@ int initialize_accounts(char *argv[])
         // Open the output file for each account
         char filename[MAX_LINE];
         sprintf(filename, "act_%s.txt", accounts[i].account_number);
+        FILE *file = fopen(filename, "w"); // Open the file in write mode, this will truncate the file
+        if (file == NULL) 
+        {
+            perror("Error opening file for deletion");
+            // Handle the error
+            return EXIT_FAILURE; 
+        }
+        fclose(file);
         accounts[i].output_file = fopen(filename, "a");
-        if (accounts[i].output_file == NULL) {
+        if (accounts[i].output_file == NULL) 
+        {
             perror("Error opening output file");
             // Handle the error
             return EXIT_FAILURE;
@@ -142,7 +149,6 @@ int initialize_accounts(char *argv[])
 
         // Write at top of file which account index it is
         fprintf(accounts[i].output_file, "account %d:\n", i);
-
 
         // Free memory allocated for account_info_tokens
         free_command_line(&account_info_tokens);
@@ -262,7 +268,7 @@ void process_transaction(command_line transaction_tokens) {
         case 'C':
             // Check balance
             // Print or store the account balance
-            //printf("%s balance: %.2f\n", active_account->account_number, active_account->balance);
+            printf("%s balance: %.2f\n", active_account->account_number, active_account->balance);
             break;
 
         case 'D':
@@ -295,16 +301,16 @@ void process_transaction(command_line transaction_tokens) {
 }
 
 // Function to iterate over every line
-void* process_worker(void* arg) 
+void* process_worker(void* arg)
 {
     account* acc = (account*)arg;
 
     // Wait for all threads to be created and signaled
-    printf("Worker Thread Barrier\n");
-    fflush(stdout);
+    //printf("Worker Thread Barrier\n");
+    //fflush(stdout);
     pthread_barrier_wait(&barrier);
-    printf("Worker Thread Start\n");
-    fflush(stdout);
+    //printf("Worker Thread Start\n");
+    //fflush(stdout);
 
     // Head to start line
     for (int i = 1; i <= acc->start_line; i++) {
@@ -338,7 +344,7 @@ void* process_worker(void* arg)
         pthread_mutex_lock(&mutex);
         while (requests_processed >= UPDATE_THRESHOLD)
         {
-            printf("Bank fulfilling requests, waiting\n");
+            //printf("Bank busy, waiting\n");
             pthread_cond_wait(&cond_acc, &mutex);
         }
         pthread_mutex_unlock(&mutex);
@@ -360,13 +366,13 @@ void* process_worker(void* arg)
             if (requests_processed == UPDATE_THRESHOLD) {
                 // Notify the bank thread to update balances
 
-                printf("Worker Thread Signal\n");
+                //printf("Worker Thread Signal\n");
                 fflush(stdout);
+
                 pthread_cond_signal(&cond_bank);
             }
 
             pthread_mutex_unlock(&mutex);
-
         }
 
         // Free memory allocated for transaction_tokens
@@ -385,12 +391,12 @@ void* process_worker(void* arg)
         free(acc->current_line);
     }
 
-    printf("Finished lines %d to %d\n", acc->start_line, acc->start_line+acc->num_lines);
+    //printf("Finished lines %d to %d\n", acc->start_line, acc->start_line+acc->num_lines);
     fflush(stdout);
 
-    pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&mutex_2);
     workers_exited++;
-    pthread_mutex_unlock(&mutex);
+    pthread_mutex_unlock(&mutex_2);
 
     return NULL;
 }
@@ -401,11 +407,8 @@ void* process_update_balance(void* arg)
     int temp = 0;
     while (1) 
     {
-        pthread_mutex_lock(&mutex);
-        // Check if the update threshold is reached
-        while(requests_processed < UPDATE_THRESHOLD)
-        {
         pthread_mutex_lock(&mutex_2);
+        //printf("workers_exited %d\n", workers_exited);
         if (workers_exited >= num_accounts)
         {
             pthread_mutex_unlock(&mutex_2);
@@ -414,20 +417,20 @@ void* process_update_balance(void* arg)
             pthread_mutex_unlock(&mutex_2);
         }
 
-        printf("Bank Thread Cond Barrier\n");
-        fflush(stdout);
+        pthread_mutex_lock(&mutex);
 
-        
-        
-            printf("hellocond\n");
+        //printf("Bank Thread Cond Barrier\n");
+        //fflush(stdout);
+
+        // Check if the update threshold is reached
+        while(requests_processed < UPDATE_THRESHOLD )
+        {
+            //printf("hellocond\n");
             pthread_cond_wait(&cond_bank, &mutex);
         }
-        pthread_mutex_unlock(&mutex);
 
-        printf("Bank Thread Cond Start\n");
+        //printf("Bank Thread Cond Start\n");
         fflush(stdout);
-
-        pthread_mutex_lock(&mutex);
 
         // Update balances for all accounts
         for (int i = 0; i < num_accounts; i++) {
@@ -456,8 +459,8 @@ void* process_update_balance(void* arg)
         pthread_cond_broadcast(&cond_acc);
         pthread_mutex_unlock(&mutex);
 
-        printf("end of process balance %d", requests_processed);
-        if (temp > 10000) {
+        //printf("end of process balance: %d\n", requests_processed);
+        if (temp > 100) {
             return NULL;
         }
         temp++;
@@ -518,12 +521,11 @@ int main(int argc, char *argv[])
     }
 
     // Wait for all worker threads to reach the barrier
-    sleep(3);
-    printf("Main Thread Barrier\n");
-    fflush(stdout);
+    //printf("Main Thread Barrier\n");
+    //fflush(stdout);
     pthread_barrier_wait(&barrier);
-    printf("Main Thread Start\n");
-    fflush(stdout);
+    //printf("Main Thread Start\n");
+    //fflush(stdout);
 
     // Create bank thread
     pthread_t bank_thread;
@@ -564,8 +566,9 @@ int main(int argc, char *argv[])
         fclose(accounts[i].output_file);
     }
 
-    pthread_mutex_destroy(&mutex);
     pthread_barrier_destroy(&barrier);
+    pthread_mutex_destroy(&mutex);
+    pthread_mutex_destroy(&mutex_2);
     pthread_cond_destroy(&cond_acc);
     pthread_cond_destroy(&cond_bank);
     return 0;
