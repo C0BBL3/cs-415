@@ -398,6 +398,10 @@ void* process_worker(void* arg)
     workers_exited++;
     pthread_mutex_unlock(&mutex_2);
 
+    pthread_mutex_lock(&mutex);
+    pthread_cond_signal(&cond_bank);
+    pthread_mutex_unlock(&mutex);
+
     return NULL;
 }
 
@@ -407,6 +411,7 @@ void* process_update_balance(void* arg)
     int temp = 0;
     while (1) 
     {
+
         pthread_mutex_lock(&mutex_2);
         //printf("workers_exited %d\n", workers_exited);
         if (workers_exited >= num_accounts)
@@ -416,8 +421,8 @@ void* process_update_balance(void* arg)
         } else {
             pthread_mutex_unlock(&mutex_2);
         }
-
         pthread_mutex_lock(&mutex);
+
 
         //printf("Bank Thread Cond Barrier\n");
         //fflush(stdout);
@@ -430,7 +435,7 @@ void* process_update_balance(void* arg)
         }
 
         //printf("Bank Thread Cond Start\n");
-        fflush(stdout);
+        //fflush(stdout);
 
         // Update balances for all accounts
         for (int i = 0; i < num_accounts; i++) {
@@ -539,6 +544,10 @@ int main(int argc, char *argv[])
     // Join worker threads
     for (int i = 0; i < num_accounts; i++) {
         pthread_join(worker_threads[i], NULL);
+    }
+
+    for (int i = 0; i < num_accounts; i++) {
+        pthread_cond_signal(&cond_bank);
     }
 
     // Join bank thread
