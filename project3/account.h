@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <sys/mman.h>
+#include <fcntl.h>
 #include "string_parser.h"
 
 #define MAX_ACCOUNTS 16
@@ -25,7 +27,18 @@ typedef struct {
     pthread_mutex_t ac_lock;
 } account;
 
+typedef struct {
+    char account_number[17];
+    double duck_balance;
+    double puddles_balance;
+    double puddles_reward_rate;
+} shared_account;
+
+// Function to initialize the accounts
 int initialize_accounts(char *argv[]); 
+
+// Function to initialize shared memory
+void initialize_shared_memory();
 
 // Function to find an account by its account number
 account* find_account_by_number(const char* account_number);
@@ -38,6 +51,9 @@ void process_transaction(command_line account_info_tokens);
 
 // Function to iterate over every line
 void* process_worker(void* arg);
+
+// Function to update Puddles Bank account balances
+void update_puddles_balances();
 
 // Function to update the balance for all accounts accross different threads
 void* process_update_balance(void* arg);
