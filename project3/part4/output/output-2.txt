@@ -1,0 +1,21 @@
+0 balance (Duck Bank):	3111685.13
+1 balance (Duck Bank):	2016708.08
+2 balance (Duck Bank):	3248744.20
+3 balance (Duck Bank):	3889910.50
+4 balance (Duck Bank):	2164242.04
+5 balance (Duck Bank):	2119930.00
+6 balance (Duck Bank):	2206168.18
+7 balance (Duck Bank):	2306013.02
+8 balance (Duck Bank):	2788273.79
+9 balance (Duck Bank):	2011539.14
+
+0 balance (Puddles Bank):	2277030.17
+1 balance (Puddles Bank):	317551.38
+2 balance (Puddles Bank):	2385862.77
+3 balance (Puddles Bank):	2627665.36
+4 balance (Puddles Bank):	590001.96
+5 balance (Puddles Bank):	1711450.33
+6 balance (Puddles Bank):	177103.68
+7 balance (Puddles Bank):	1265455.79
+8 balance (Puddles Bank):	1857051.22
+9 balance (Puddles Bank):	868766.53

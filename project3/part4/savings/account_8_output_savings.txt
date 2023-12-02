@@ -1,0 +1,20 @@
+account: 8
+account: 8
+Current Savings Balance 	724381.68
+Current Savings Balance 	790234.56
+Current Savings Balance 	856087.44
+Current Savings Balance 	921940.32
+Current Savings Balance 	987793.20
+Current Savings Balance 	1053646.08
+Current Savings Balance 	1119498.96
+Current Savings Balance 	1185351.84
+Current Savings Balance 	1251204.72
+Current Savings Balance 	1317057.60
+Current Savings Balance 	1382910.48
+Current Savings Balance 	1448763.36
+Current Savings Balance 	1514616.24
+Current Savings Balance 	1580469.12
+Current Savings Balance 	1646322.01
+Current Savings Balance 	1712174.89
+Current Savings Balance 	1778027.77
+Current Savings Balance 	1843880.65
